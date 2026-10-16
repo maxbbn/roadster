@@ -13,6 +13,8 @@ export class Input {
   private held = new Set<string>();
   private pressed = new Set<string>();
   private padPrev: boolean[] = [];
+  /** When set (autopilot / recording), replaces live keyboard and gamepad state. */
+  override: InputState | null = null;
 
   constructor() {
     window.addEventListener('keydown', (e) => {
@@ -31,6 +33,7 @@ export class Input {
   }
 
   state(): InputState {
+    if (this.override) return this.override;
     const k = (c: string) => this.held.has(c);
     const pad = this.pad();
     const ax = pad ? pad.axes[0] ?? 0 : 0;
@@ -44,6 +47,11 @@ export class Input {
       boost: k('ShiftLeft') || k('ShiftRight') || btn(5),
       jumpHeld: k('Space') || btn(0),
     };
+  }
+
+  /** Queues a key press as if it had been typed. */
+  inject(code: string): void {
+    this.pressed.add(code);
   }
 
   /** True once per key press. Gamepad buttons are mapped to key codes. */

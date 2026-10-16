@@ -28,7 +28,6 @@ const fmtTime = (t: number) => {
 export class Hud {
   private root: HTMLElement;
   private el: Record<string, HTMLElement> = {};
-  private toastTimer = 0;
   paintIndex = 0;
   onPaint?: (color: string) => void;
   onStart?: () => void;
@@ -94,6 +93,8 @@ export class Hud {
       <div class="fade" data-k="fade"></div>
     `;
     root.querySelectorAll<HTMLElement>('[data-k]').forEach((e) => (this.el[e.dataset.k!] = e));
+    // Driven by the CSS animation itself so it also works when animations are stepped manually.
+    this.el.toast.addEventListener('animationend', () => this.el.toast.classList.remove('show'));
     PAINTS.forEach((p, i) => {
       const b = document.createElement('button');
       b.className = 'swatch' + (i === 0 ? ' on' : '');
@@ -140,8 +141,6 @@ export class Hud {
     t.classList.remove('show');
     void t.offsetWidth;
     t.classList.add('show');
-    window.clearTimeout(this.toastTimer);
-    this.toastTimer = window.setTimeout(() => t.classList.remove('show'), 1800);
   }
 
   fade(on: boolean): void {

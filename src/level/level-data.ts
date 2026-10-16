@@ -116,8 +116,8 @@ export const DEMO_LEVEL: LevelData = {
       style: 'road',
       verts: [
         { x: 208, y: BOTTOM, r: 0 },
-        { x: 246, y: BOTTOM, r: 0 },
-        { x: 246, y: 12, r: 0.5 },
+        { x: 250, y: BOTTOM, r: 0 },
+        { x: 250, y: 12, r: 0.5 },
         { x: 208, y: 12, r: 0.5 },
       ],
     },
@@ -151,7 +151,7 @@ export const DEMO_LEVEL: LevelData = {
   hazards: [
     { x0: 76, x1: 92, y0: BOTTOM, y1: -3.5 },
     { x0: 160, x1: 208, y0: BOTTOM, y1: -2 },
-    { x0: 246, x1: 334, y0: BOTTOM, y1: -4 },
+    { x0: 250, x1: 334, y0: BOTTOM, y1: -4 },
   ],
   lasers: [
     { x: 262, yMin: -4, yMax: 44, gapCenter: 12, gapSize: 7.5, amplitude: 4, speed: 1.1, phase: 0 },

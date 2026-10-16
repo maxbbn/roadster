@@ -17,18 +17,18 @@ const NO_INPUT: InputState = { left: false, right: false, up: false, down: false
 
 export class Game {
   private stage: Stage;
-  private level: BuiltLevel;
-  private car: CarController;
+  readonly level: BuiltLevel;
+  readonly car: CarController;
   private model: RoadsterModel;
   private glow = new ParticleSystem(2500, true);
   private smoke = new ParticleSystem(900, false);
   private background: { update: (t: number, camX: number) => void };
-  private input = new Input();
+  readonly input = new Input();
   private hud: Hud;
   private audio = new GameAudio();
 
-  private state: GameState = 'title';
-  private clock = 0;
+  state: GameState = 'title';
+  clock = 0;
   private runTime = 0;
   private cells = 0;
   private deaths = 0;
@@ -49,6 +49,9 @@ export class Game {
   private emitCarry = 0;
   debugCam: [number, number, number] | null = null;
   paused = false;
+  /** In manual mode the render loop idles and time only moves through advance(). */
+  manual = false;
+  autopilot: { update: (game: Game, dt: number) => void } | null = null;
 
   constructor(canvas: HTMLCanvasElement, hudRoot: HTMLElement) {
     this.stage = new Stage(canvas);
@@ -127,7 +130,18 @@ export class Game {
   private frame(now: number): void {
     const dt = Math.min(0.05, (now - this.last) / 1000);
     this.last = now;
+    if (!this.manual) this.tick(dt, true);
+    requestAnimationFrame((t) => this.frame(t));
+  }
+
+  /** Advances the game by exactly dt seconds (recording / tests). */
+  advance(dt: number, render = true): void {
+    this.tick(dt, render);
+  }
+
+  private tick(dt: number, render: boolean): void {
     this.clock += dt;
+    this.autopilot?.update(this, dt);
     this.input.pollPad();
     this.handleKeys();
 
@@ -172,9 +186,8 @@ export class Game {
     this.audio.update(speed, this.car.throttle, this.vacuumVis, thrust, this.state === 'play' || this.state === 'finish');
     this.hud.update(this.hudState());
 
-    this.stage.render();
+    if (render) this.stage.render();
     this.input.endFrame();
-    requestAnimationFrame((t) => this.frame(t));
   }
 
   private hudState() {

@@ -41,3 +41,12 @@ pnpm build      # 类型检查 + 生产构建到 dist/
 - `src/level/` — 关卡数据、圆角多边形碰撞世界、地形与道具构建、远景（城市、山脉、火箭发射台）
 - `src/render/` — 渲染管线、程序化 PBR 贴图、粒子系统
 - `src/game.ts` — 游戏状态、检查点、拾取、镜头、特效与 HUD 驱动
+
+## 录制试玩视频
+
+`?autopilot` 会启用脚本驾驶，自动跑完整关。录制脚本以固定 60 fps 逐帧推进游戏并截图（含 HUD），再用 ffmpeg 合成，画面流畅度与本机实时帧率无关：
+
+```bash
+pnpm dev                          # 另开一个终端
+node scripts/record-demo.mjs      # 输出 media/roadster-demo.mp4（需要 Chrome 和 ffmpeg）
+```
