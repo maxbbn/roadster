@@ -1,0 +1,72 @@
+// Keyboard + gamepad input with edge detection.
+
+export interface InputState {
+  left: boolean;
+  right: boolean;
+  up: boolean;
+  down: boolean;
+  boost: boolean;
+  jumpHeld: boolean;
+}
+
+export class Input {
+  private held = new Set<string>();
+  private pressed = new Set<string>();
+  private padPrev: boolean[] = [];
+
+  constructor() {
+    window.addEventListener('keydown', (e) => {
+      if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) e.preventDefault();
+      if (!this.held.has(e.code)) this.pressed.add(e.code);
+      this.held.add(e.code);
+    });
+    window.addEventListener('keyup', (e) => this.held.delete(e.code));
+    window.addEventListener('blur', () => this.held.clear());
+  }
+
+  private pad(): Gamepad | null {
+    const pads = navigator.getGamepads?.() ?? [];
+    for (const p of pads) if (p) return p;
+    return null;
+  }
+
+  state(): InputState {
+    const k = (c: string) => this.held.has(c);
+    const pad = this.pad();
+    const ax = pad ? pad.axes[0] ?? 0 : 0;
+    const ay = pad ? pad.axes[1] ?? 0 : 0;
+    const btn = (i: number) => !!pad?.buttons[i]?.pressed;
+    return {
+      left: k('KeyA') || k('ArrowLeft') || ax < -0.4 || btn(14),
+      right: k('KeyD') || k('ArrowRight') || ax > 0.4 || btn(15),
+      up: k('KeyW') || k('ArrowUp') || ay < -0.4 || btn(12) || btn(7),
+      down: k('KeyS') || k('ArrowDown') || ay > 0.4 || btn(13),
+      boost: k('ShiftLeft') || k('ShiftRight') || btn(5),
+      jumpHeld: k('Space') || btn(0),
+    };
+  }
+
+  /** True once per key press. Gamepad buttons are mapped to key codes. */
+  consume(code: string): boolean {
+    const had = this.pressed.has(code);
+    this.pressed.delete(code);
+    return had;
+  }
+
+  /** Call once per frame before reading presses to fold gamepad edges into key presses. */
+  pollPad(): void {
+    const pad = this.pad();
+    if (!pad) return;
+    const map: Record<number, string> = { 0: 'Space', 2: 'KeyQ', 1: 'KeyE', 3: 'KeyR', 9: 'Enter' };
+    for (const [i, code] of Object.entries(map)) {
+      const idx = Number(i);
+      const now = !!pad.buttons[idx]?.pressed;
+      if (now && !this.padPrev[idx]) this.pressed.add(code);
+      this.padPrev[idx] = now;
+    }
+  }
+
+  endFrame(): void {
+    this.pressed.clear();
+  }
+}
