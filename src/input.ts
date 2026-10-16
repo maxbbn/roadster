@@ -9,6 +9,12 @@ export interface InputState {
   jumpHeld: boolean;
 }
 
+/** Virtual key code for the reset shortcut (Ctrl+R / ⌘R, gamepad Y). */
+export const RESET = 'Reset';
+
+export const IS_MAC = /Mac|iPhone|iPad/.test(navigator.platform);
+export const RESET_LABEL = IS_MAC ? '⌘R' : 'Ctrl+R';
+
 export class Input {
   private held = new Set<string>();
   private pressed = new Set<string>();
@@ -18,11 +24,21 @@ export class Input {
 
   constructor() {
     window.addEventListener('keydown', (e) => {
+      // Reset needs a modifier so it can't be hit by accident; also stops the browser from reloading.
+      if (e.code === 'KeyR' && (e.ctrlKey || e.metaKey)) {
+        e.preventDefault();
+        if (!e.repeat) this.pressed.add(RESET);
+        return;
+      }
       if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) e.preventDefault();
       if (!this.held.has(e.code)) this.pressed.add(e.code);
       this.held.add(e.code);
     });
-    window.addEventListener('keyup', (e) => this.held.delete(e.code));
+    window.addEventListener('keyup', (e) => {
+      // macOS drops keyup for other keys while ⌘ is down, so drop everything when it is released.
+      if (e.key === 'Meta') this.held.clear();
+      else this.held.delete(e.code);
+    });
     window.addEventListener('blur', () => this.held.clear());
   }
 
@@ -65,7 +81,7 @@ export class Input {
   pollPad(): void {
     const pad = this.pad();
     if (!pad) return;
-    const map: Record<number, string> = { 0: 'Space', 2: 'KeyQ', 1: 'KeyE', 3: 'KeyR', 9: 'Enter' };
+    const map: Record<number, string> = { 0: 'Space', 2: 'KeyQ', 1: 'KeyE', 3: RESET, 9: 'Enter' };
     for (const [i, code] of Object.entries(map)) {
       const idx = Number(i);
       const now = !!pad.buttons[idx]?.pressed;

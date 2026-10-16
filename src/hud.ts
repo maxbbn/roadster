@@ -1,4 +1,5 @@
 import type { CarMode } from './car/car-controller';
+import { RESET_LABEL } from './input';
 
 export const PAINTS: { name: string; color: string }[] = [
   { name: '珍珠白', color: '#dfe1e4' },
@@ -50,7 +51,7 @@ export class Hud {
       <div class="toast" data-k="toast"></div>
       <div class="hud-bottom">
         <div class="modes">
-          <div class="mode" data-mode="drive"><span class="key">1</span>DRIVE<small>驾驶</small></div>
+          <div class="mode" data-mode="drive">DRIVE<small>驾驶</small></div>
           <div class="mode" data-mode="vacuum"><span class="key">Q</span>VACUUM<small>真空吸附</small></div>
           <div class="mode" data-mode="jet"><span class="key">E</span>JET<small>喷气</small></div>
         </div>
@@ -60,9 +61,9 @@ export class Hud {
         </div>
       </div>
       <div class="help" data-k="help">
-        <b>A/D ←/→</b> 驾驶 · <b>Shift</b> 加速 · <b>Space</b> 跳跃<br/>
-        <b>Q</b> 真空吸附 · <b>E</b> 喷气 · <b>W/↑</b> 升力<br/>
-        <b>R</b> 回到检查点 · <b>P</b> 暂停 · <b>M</b> 静音 · <b>H</b> 隐藏帮助
+        <b>A/D</b> 驾驶 · <b>Shift</b> 加速 · <b>Space</b> 跳跃 / 喷气上升<br/>
+        <b>Q</b> 真空吸附 · <b>E</b> 喷气（再按一次退出）<br/>
+        <b>${RESET_LABEL}</b> 回到检查点 · <b>P</b> 暂停 · <b>M</b> 静音 · <b>H</b> 隐藏帮助
       </div>
       <div class="overlay" data-k="title">
         <div class="card">
@@ -72,8 +73,8 @@ export class Hud {
           <div class="paints" data-k="paints"></div>
           <button class="start" data-k="startBtn">开始 · Enter</button>
           <div class="keys">
-            <div><b>A / D</b> 驾驶</div><div><b>Space</b> 跳跃</div><div><b>Shift</b> 加速</div>
-            <div><b>Q</b> 真空吸附</div><div><b>E</b> 喷气模式</div><div><b>W</b> 升力</div>
+            <div><b>A / D</b> 驾驶</div><div><b>Space</b> 跳跃 / 上升</div><div><b>Shift</b> 加速</div>
+            <div><b>Q</b> 真空吸附</div><div><b>E</b> 喷气模式</div><div><b>${RESET_LABEL}</b> 重置</div>
           </div>
         </div>
       </div>
@@ -87,7 +88,7 @@ export class Hud {
             <div><span>重来次数</span><b class="mono" data-k="rDeaths"></b></div>
             <div><span>评级</span><b class="rank" data-k="rRank"></b></div>
           </div>
-          <button class="start" data-k="againBtn">再来一次 · R</button>
+          <button class="start" data-k="againBtn">再来一次 · Enter</button>
         </div>
       </div>
       <div class="fade" data-k="fade"></div>
