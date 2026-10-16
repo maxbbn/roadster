@@ -6,6 +6,10 @@ import { execFileSync } from 'node:child_process';
 import { mkdirSync, rmSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { tmpdir } from 'node:os';
+import { fileURLToPath } from 'node:url';
+
+// Resolve outputs against the project root so the script works from any directory.
+const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
 const args = process.argv.slice(2);
 const opt = (name, fallback) => {
@@ -13,7 +17,7 @@ const opt = (name, fallback) => {
   return i >= 0 ? args[i + 1] : fallback;
 };
 const url = opt('url', 'http://localhost:5188');
-const out = resolve(opt('out', 'media/roadster-demo.mp4'));
+const out = resolve(root, opt('out', 'media/roadster-demo.mp4'));
 const framesDir = resolve(opt('frames', join(tmpdir(), 'roadster-frames')));
 const width = Number(opt('width', 1920));
 const height = Number(opt('height', 1080));

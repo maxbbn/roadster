@@ -48,5 +48,5 @@ pnpm build      # 类型检查 + 生产构建到 dist/
 
 ```bash
 pnpm dev                          # 另开一个终端
-node scripts/record-demo.mjs      # 输出 media/roadster-demo.mp4（需要 Chrome 和 ffmpeg）
+pnpm record                       # 输出 media/roadster-demo.mp4（需要 Chrome 和 ffmpeg）
 ```
