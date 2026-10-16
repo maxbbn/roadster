@@ -1,6 +1,6 @@
 # Roadster Run · Demo
 
-以第二代 Roadster 为原型的 2.5D 横版过关 Demo。Three.js 实时渲染（PBR 车漆清漆层、IBL 反射、阴影、Bloom 泛光、MSAA），车辆模型、贴图、音效全部程序化生成，无外部资源。
+以新款 Roadster（楔形切面车身、贯穿式灯带、深色玻璃座舱）为原型的 2.5D 横版过关 Demo。Three.js 实时渲染（PBR 车漆清漆层、IBL 反射、阴影、Bloom 泛光、MSAA），车辆模型、贴图、音效全部程序化生成，无外部资源。
 
 ## 运行
 
@@ -36,7 +36,7 @@ pnpm build      # 类型检查 + 生产构建到 dist/
 
 ## 代码结构
 
-- `src/car/roadster-model.ts` — 放样（loft）车身、轮拱、玻璃座舱、轮毂、灯组、推进器喷流着色器
+- `src/car/roadster-model.ts` — 关键帧切面放样车身（平面着色）、轮拱、玻璃座舱、星形气动轮毂、前后贯穿灯带、推进器喷流着色器
 - `src/car/car-controller.ts` — 贴面行驶物理：轮下射线贴地、内角/外角过渡、空中吸附、喷气飞行
 - `src/level/` — 关卡数据、圆角多边形碰撞世界、地形与道具构建、远景（城市、山脉、火箭发射台）
 - `src/render/` — 渲染管线、程序化 PBR 贴图、粒子系统

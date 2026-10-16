@@ -1,8 +1,8 @@
 import type { CarMode } from './car/car-controller';
 
 export const PAINTS: { name: string; color: string }[] = [
+  { name: '珍珠白', color: '#dfe1e4' },
   { name: '烈焰红', color: '#b3121a' },
-  { name: '珍珠白', color: '#e9ebee' },
   { name: '曜石黑', color: '#16181c' },
   { name: '深海蓝', color: '#123a8c' },
   { name: '水银银', color: '#8e949c' },
