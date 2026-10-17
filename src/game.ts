@@ -6,7 +6,7 @@ import { buildBackground } from './level/background';
 import { DEMO_LEVEL } from './level/level-data';
 import { CarController, type CarMode } from './car/car-controller';
 import { RoadsterModel, WHEEL_RADIUS } from './car/roadster-model';
-import { Input, type InputState } from './input';
+import { Input, RESET, type InputState } from './input';
 import { Hud, PAINTS } from './hud';
 import { GameAudio } from './audio';
 
@@ -215,22 +215,19 @@ export class Game {
       return;
     }
     if (this.state === 'finish') {
-      if (this.stateTimer < 0 && (i.consume('KeyR') || i.consume('Enter'))) this.startRun();
+      if (this.stateTimer < 0 && (i.consume(RESET) || i.consume('Enter') || i.consume('Space'))) this.startRun();
       return;
     }
     if (this.state !== 'play') return;
-    if (i.consume('KeyP')) {
+    if (i.consume('KeyP') || i.consume('Escape')) {
       this.paused = !this.paused;
       this.hud.toast(this.paused ? 'PAUSED' : 'GO', '#ffffff');
     }
     if (this.paused) return;
-    if (i.consume('KeyR')) {
+    if (i.consume(RESET)) {
       this.respawn();
       return;
     }
-    if (i.consume('Digit1')) this.car.setMode('drive');
-    if (i.consume('Digit2')) this.car.setMode('vacuum');
-    if (i.consume('Digit3')) this.car.setMode('jet');
     if (i.consume('KeyQ')) this.car.setMode(this.car.mode === 'vacuum' ? 'drive' : 'vacuum');
     if (i.consume('KeyE')) this.car.setMode(this.car.mode === 'jet' ? 'drive' : 'jet');
   }
